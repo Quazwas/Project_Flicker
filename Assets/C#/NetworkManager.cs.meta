@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 03dee3b82ea4ed941860c9413df7fbd1
+timeCreated: 1430530712
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - playerPrefab: {fileID: 167970, guid: 5bb7364b75c33194bbb35f63f0258974, type: 2}
+  - ipField: {instanceID: 0}
+  - portField: {instanceID: 0}
+  - isLANField: {instanceID: 0}
+  - passField: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

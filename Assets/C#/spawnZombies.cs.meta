@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: e3a3971989a87c24f9a844d92e598ca5
+timeCreated: 1430563680
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - zombie: {fileID: 131266, guid: 783a6f4af4298b147bddf8d38517231f, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
