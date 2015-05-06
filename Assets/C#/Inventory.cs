@@ -4,39 +4,69 @@ using System.Collections.Generic;
 
 public class Inventory : MonoBehaviour {
 
+	public GameObject iPrefab;
+	GameObject player;
+	GameObject players;
+	
+	void OnServerInitialized() {
+		GameObject[] players = (GameObject.FindGameObjectsWithTag("Player"));
+		foreach(GameObject p in players) {
+			if(p.GetComponent<NetworkView>().isMine) {
+				player = p;
+			}
+		}
+	}
+
+	void OnConnectedToServer() {
+		GameObject[] players = (GameObject.FindGameObjectsWithTag("Player"));
+		foreach(GameObject p in players) {
+			if(p.GetComponent<NetworkView>().isMine) {
+				player = p;
+			}
+		}
+	}
+
 	public class Item {
 		public int size;
 		public string name;
 		public float damage;
 		public int type;
+		public int id;
 
 		public Item(ItemType itemType) {
 			name = itemType.name;
 			damage = 100f;
 			size = itemType.size;
+			id = itemType.index;
 		}
 		public Item(ItemType itemType, float newDamage) {
 			name = itemType.name;
 			damage = newDamage;
 			size = itemType.size;
+			id = itemType.index;
 		}
 	}
 	public class ItemType {
 		public int size;
 		public string name;
-		public ItemType(string newName, int newSize) {
+		public int index;
+		public ItemType(int newIndex, string newName, int newSize) {
 			name = newName;
 			size = newSize;
+			index = newIndex;
 		}
 	}
+
+
 	List<ItemType> itemTypes = new List<ItemType>() {
-		new ItemType("Matchbox", 1),						//0
-		new ItemType("String", 1),       					// 1
-		new ItemType("Grenade", 1),                       //2
-		new ItemType("Companion Cube", 5),		//3
-		new ItemType("Stop Sign", 10),					//4
-		new ItemType("Pavement", 10)					//5
+		new ItemType(0,"Matchbox", 1),			//0
+		new ItemType(1,"String", 1),       		//1
+		new ItemType(2,"Grenade", 1),				//2
+		new ItemType(3,"Companion Cube", 5),		//3
+		new ItemType(4,"Stop Sign", 10),			//4
+		new ItemType(5,"Pavement", 10)			//5
 	};
+
 	public bool addItemToBackpack(Item newItem) {
 		if(backpack.capacity - backpack.fullness() >= newItem.size) {
 			backpack.items.Add (newItem);
@@ -44,9 +74,11 @@ public class Inventory : MonoBehaviour {
 		}
 		return false;
 	}
-	public bool addItemToBackpack(int itemIndex) {
+	public bool addItemToBackpack(int itemIndex, float damage) {
 		if(backpack.capacity - backpack.fullness() >= itemTypes[itemIndex].size) {
-			backpack.items.Add (new Item(itemTypes[itemIndex]));
+			Item i = new Item(itemTypes[itemIndex]);
+			i.damage = damage;
+			backpack.items.Add(i);
 			return true;
 		}
 		return false;
@@ -58,6 +90,7 @@ public class Inventory : MonoBehaviour {
 		public int type;
 		public int size;
 		public string name;
+		public int id;
 		public List<Item> contents = new List<Item>();
 
 		public Container(ContainerType contType) {
@@ -71,6 +104,8 @@ public class Inventory : MonoBehaviour {
 			capacity = contType.capacity;
 			damage = newDamage;
 			size = contType.size;
+			id = contType.index;
+
 		}
 		public int fullness() {
 			int f = 0;
@@ -88,9 +123,12 @@ public class Inventory : MonoBehaviour {
 		}
 		return false;
 	}
-	public bool addContainer(int containerIndex) {
+	public bool addContainer(int containerIndex, float damage) {
 		if(backpack.capacity - backpack.fullness() >= containerTypes[containerIndex].size) {
-			backpack.containers.Add (new Container(containerTypes[containerIndex]));
+			Container i;
+			i = new Container(containerTypes[containerIndex]);
+			i.damage = damage;
+			backpack.containers.Add (i);
 			return true;
 		}
 		return false;
@@ -100,7 +138,9 @@ public class Inventory : MonoBehaviour {
 		public int type;
 		public string name;
 		public int size;
-		public ContainerType(string newName, int newCap, int newSize) {
+		public int index;
+		public ContainerType(int newIndex, string newName, int newCap, int newSize) {
+			index = newIndex;
 			name = newName;
 			capacity = newCap;
 			size = newSize;
@@ -113,8 +153,8 @@ public class Inventory : MonoBehaviour {
 		}
 	}
 	List<ContainerType> containerTypes = new List<ContainerType>() {
-		new ContainerType("Small Pouch", 2, 1),
-		new ContainerType("Large Pouch", 3,1)
+		new ContainerType(0,"Small Pouch", 2, 1),
+		new ContainerType(1,"Large Pouch", 3,1)
 	};
 	public class Backpack {
 		public int capacity = 20;
@@ -134,6 +174,42 @@ public class Inventory : MonoBehaviour {
 
 	Backpack backpack = new Backpack();
 
+	void drop(Item item) {
+		GameObject o;
+		Vector3 itemSpawn;
+		RaycastHit hit;
+		Physics.Raycast(player.transform.position,Vector3.down,out hit);
+		itemSpawn = hit.point;
+
+		backpack.items.Remove(item);
+		o = Network.Instantiate(iPrefab,itemSpawn,Quaternion.identity,0) as GameObject;
+		o.GetComponent<itemDetails>().itemIndex = item.id;
+		o.GetComponent<itemDetails>().damage = item.damage;
+		o.GetComponent<itemDetails>().isContainer = false;
+	}
+
+	void drop(Container container) {
+		GameObject o;
+		Vector3 itemSpawn;
+		RaycastHit hit;
+		Physics.Raycast(player.transform.position,Vector3.down,out hit);
+		itemSpawn = hit.point;
+
+		backpack.containers.Remove(container);
+		o = Network.Instantiate(iPrefab,itemSpawn,Quaternion.identity,0) as GameObject;
+		o.GetComponent<itemDetails>().itemIndex = container.id;
+		o.GetComponent<itemDetails>().damage = container.damage;
+		o.GetComponent<itemDetails>().isContainer = true;
+	}
+
+	void Update() {
+		if(Input.GetKeyDown(KeyCode.Q)) {
+			drop(backpack.items[0]);
+		}
+		if(Input.GetKeyDown(KeyCode.X)) {
+			drop(backpack.containers[0]);
+		}
+	}
 
 
 	int UIheight = 30;
