@@ -20,8 +20,13 @@ public class NetworkManager : MonoBehaviour {
 	public void setVariables() {
 		ip = ipField.GetComponent<InputField>().text;
 		pass = passField.GetComponent<InputField>().text;
-		port = int.Parse(portField.GetComponent<InputField>().text);
 		isLAN = isLANField.GetComponent<Toggle>().isOn;
+		string portRaw = portField.GetComponent<InputField> ().text;
+		if (portRaw != "") {
+			port = int.Parse (portRaw);
+		} else {
+			port = 25000;
+		}
 	}
 
 	void OnServerInitialized()	{
@@ -63,12 +68,12 @@ public class NetworkManager : MonoBehaviour {
     	Network.Connect(ip, port, pass);
 	}
 	void OnGUI() {
-		if (GUI.Button(new Rect(20, 120, 160, 50), "Refresh Hosts")) {
+		if (GUI.Button(new Rect(20, 500, 160, 50), "Refresh Hosts")) {
 			RefreshHostList();
 		}
 		if (hostList != null) {
 			for (int i = 0; i < hostList.Length; i++) {
-				if (GUI.Button(new Rect(20, 180+ (60 * i), 160, 50), hostList[i].gameName)) {
+				if (GUI.Button(new Rect(20, 500+ (60 * i), 160, 50), hostList[i].gameName)) {
 					JoinServer(hostList[i]);
 				}
 			}
