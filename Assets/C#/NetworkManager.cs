@@ -36,8 +36,9 @@ public class NetworkManager : MonoBehaviour {
 	void OnConnectedToServer() {
     	SpawnPlayer();
 	}
+	public GameObject player;
 	public void SpawnPlayer() {
-    	Network.Instantiate(playerPrefab, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+    	player = Network.Instantiate(playerPrefab, new Vector3(0f, 5f, 0f), Quaternion.identity, 0) as GameObject;
 	}
 
 	private HostData[] hostList;
@@ -67,7 +68,15 @@ public class NetworkManager : MonoBehaviour {
 		setVariables();
     	Network.Connect(ip, port, pass);
 	}
+
+	public void OnDisconnectedFromServer() {
+		Network.Destroy(player);
+	}
+
+	[SerializeField]
+	GUISkin menuSkin;
 	void OnGUI() {
+		GUI.skin = menuSkin;
 		if (GUI.Button(new Rect(20, 500, 160, 50), "Refresh Hosts")) {
 			RefreshHostList();
 		}
