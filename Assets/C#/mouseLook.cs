@@ -11,14 +11,17 @@ public class mouseLook : MonoBehaviour {
 	public bool networkOverride;
 	public bool canLook = true;
 
-
+	int mod = 1;
 	// Update is called once per frame
 	void Update () {
+		if(Input.GetKeyDown (KeyCode.K)) {
+			mod = -mod;
+		}
 		if (GetComponent<NetworkView>().isMine || networkOverride) {
 			if(canLook) {
 				horizontalRot = Input.GetAxis ("Mouse X") * lookSpeed;
 				transform.Rotate (0, horizontalRot, 0);
-				verticalRot -= Input.GetAxis ("Mouse Y") * lookSpeed;
+				verticalRot -= Input.GetAxis ("Mouse Y") * mod*lookSpeed;
 				verticalRot = Mathf.Clamp (verticalRot, -verticalLimit, verticalLimit);
 				camera.transform.localRotation = Quaternion.Euler (verticalRot, 0, 0);
 			}
