@@ -11,19 +11,38 @@ public class mouseLook : MonoBehaviour {
 	public bool networkOverride;
 	public bool canLook = true;
 
-	int mod = 1;
+	int mody = 1;
+	float changey = 2;
+	float tTimey = 0;
+	int modx = 1;
+	float changex = 2;
+	float tTimex = 0;
+	bool drunk =false;
 	// Update is called once per frame
 	void Update () {
 		if(Input.GetKeyDown (KeyCode.K)) {
-			mod = -mod;
+			mody= -mody;
 		}
+		if(Input.GetKeyDown(KeyCode.Escape)) {
+			print ("Lock");
+			if(modx==0) {
+				modx = 1;
+				mody = 1;
+			} else {
+				modx = 0;
+				mody = 0;
+			}
+		}
+
 		if (GetComponent<NetworkView>().isMine || networkOverride) {
 			if(canLook) {
-				horizontalRot = Input.GetAxis ("Mouse X") * lookSpeed;
-				transform.Rotate (0, horizontalRot, 0);
-				verticalRot -= Input.GetAxis ("Mouse Y") * mod*lookSpeed;
-				verticalRot = Mathf.Clamp (verticalRot, -verticalLimit, verticalLimit);
-				camera.transform.localRotation = Quaternion.Euler (verticalRot, 0, 0);
+				if(!GetComponent<InventoryDisplay>().inventoryOpen) {
+					horizontalRot = Input.GetAxis ("Mouse X") * modx* lookSpeed;
+					transform.Rotate (0, horizontalRot, 0);
+					verticalRot -= Input.GetAxis ("Mouse Y") * mody*lookSpeed;
+					verticalRot = Mathf.Clamp (verticalRot, -verticalLimit, verticalLimit);
+					camera.transform.localRotation = Quaternion.Euler (verticalRot, 0, 0);
+				}
 			}
 		}
 	}

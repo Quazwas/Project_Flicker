@@ -19,6 +19,11 @@ public class toggleMouseLock : MonoBehaviour {
 		if(Input.GetKeyDown(KeyCode.Escape)) {
 			toggleLock();
 		}
+		if (GetComponent<InventoryDisplay> ().inventoryOpen) {
+			toggleLock(true);
+		} else {
+			toggleLock(false);
+		}
 	}
 
 	void toggleLock() {

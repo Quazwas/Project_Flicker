@@ -76,14 +76,16 @@ public class NetworkManager : MonoBehaviour {
 	[SerializeField]
 	GUISkin menuSkin;
 	void OnGUI() {
-		GUI.skin = menuSkin;
-		if (GUI.Button(new Rect(20, 500, 160, 50), "Refresh Hosts")) {
-			RefreshHostList();
-		}
-		if (hostList != null) {
-			for (int i = 0; i < hostList.Length; i++) {
-				if (GUI.Button(new Rect(20, 500+ (60 * i), 160, 50), hostList[i].gameName)) {
-					JoinServer(hostList[i]);
+		if(!Network.isClient && !Network.isServer) {
+			GUI.skin = menuSkin;
+			if (GUI.Button(new Rect(20, 500, 160, 50), "Refresh Hosts")) {
+				RefreshHostList();
+			}
+			if (hostList != null) {
+				for (int i = 0; i < hostList.Length; i++) {
+					if (GUI.Button(new Rect(20, 560+ (60 * i), 160, 50), hostList[i].gameName)) {
+						JoinServer(hostList[i]);
+					}
 				}
 			}
 		}

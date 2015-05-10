@@ -8,6 +8,7 @@ public class playerMovement : MonoBehaviour {
 	public bool networkOverride;
 	Vector3 moveDirection = Vector3.zero;
 	
+
 	// Update is called once per frame
 	void Update () {
 		if (GetComponent<NetworkView>().isMine || networkOverride) {
