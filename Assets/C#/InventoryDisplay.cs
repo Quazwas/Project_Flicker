@@ -25,7 +25,7 @@ public class InventoryDisplay : MonoBehaviour {
 
 	int UIheight = 50;
 	int UIGap = 5;
-	int UIWIdth = 200;
+	int UIWIdth = 250;
 	int UIOffset = 30;
 	int UIx = 100;
 	int UIy = 100;
@@ -63,9 +63,9 @@ public class InventoryDisplay : MonoBehaviour {
 
 			if (itemSelected) {
 
-				GUI.Button (new Rect (mouseX - UIWIdth - 52, mouseY - 25, 50, 50), "");
-				GUI.DrawTexture(new Rect(mouseX - UIWIdth - 52, mouseY - 25, 50, 50), icons[selectedItem.iconIndex], ScaleMode.StretchToFill, true, 10.0F);
-				GUI.Button (new Rect (mouseX - UIWIdth-2, mouseY - 25, UIWIdth, UIheight), selectedItem.name);
+
+				GUI.Button (new Rect (mouseX-2, mouseY - 25, UIWIdth, UIheight), selectedItem.name);
+				GUI.DrawTexture(new Rect(mouseX - 2, mouseY - 25, 50, 50), icons[selectedItem.iconIndex], ScaleMode.StretchToFill, true, 10.0F);
 
 				if (Input.GetButtonUp ("Fire2")) {
 					if(overBackpack){
@@ -212,19 +212,14 @@ public class InventoryDisplay : MonoBehaviour {
 	}
 
 	void newBackpack(Inventory.Backpack backpack) {
-		GUI.Button (new Rect (UIx, UIy, 50, 50), "[IMG]");
-		GUI.Button (new Rect (UIx+50, UIy, 220, 50), "Backpack  ~  " + backpack.fullness() + "/" + backpack.capacity.ToString());
+		GUI.Button (new Rect (UIx, UIy, 220, 50), "Backpack  ~  " + backpack.fullness() + "/" + backpack.capacity.ToString());
 	}
 
 
 
 	bool newContainer(int i, Inventory.Container container) {
 		bool pressed = false;
-		if(GUI.Button (new Rect (UIx+UIOffset, UIy+i*(UIheight+UIGap)+extraY, 50, 50), i.ToString())) {
-			container.isExpanded = !container.isExpanded;
-			pressed =  true;
-		}
-		if(GUI.Button(new Rect(UIx+UIOffset+50,UIy+i*(UIheight+UIGap)+extraY,UIWIdth,UIheight), container.name + "  ~  "+container.fullness() + "/" + container.capacity.ToString())) {
+		if(GUI.Button(new Rect(UIx+UIOffset,UIy+i*(UIheight+UIGap)+extraY,UIWIdth,UIheight), container.name + "  ~  "+container.fullness() + "/" + container.capacity.ToString())) {
 			container.isExpanded = !container.isExpanded;
 			pressed =  true;
 		}
@@ -233,35 +228,29 @@ public class InventoryDisplay : MonoBehaviour {
 
 	int newItem(int i, Inventory.Item item) {
 		int pressed = -1;
-		if (GUI.Button (new Rect (UIx+UIOffset, UIy+i*(UIheight+UIGap)+extraY, 50, 50), "")) {
-			pressed = Event.current.button;
-		}
-		GUI.DrawTexture(new Rect(UIx+UIOffset, UIy+i*(UIheight+UIGap)+extraY, 50,50), icons[item.iconIndex], ScaleMode.StretchToFill, true, 10.0F);
-		if (GUI.Button (new Rect (UIx+UIOffset+50, UIy + i * (UIheight + UIGap)+extraY, UIWIdth, UIheight), item.name)) {
+		if (GUI.Button (new Rect (UIx+UIOffset, UIy + i * (UIheight + UIGap)+extraY, UIWIdth, UIheight), item.name)) {
 			if(pressed == -1) {
 				pressed = Event.current.button;
 			}
 		}
+		GUI.DrawTexture(new Rect(UIx+UIOffset, UIy+i*(UIheight+UIGap)+extraY, 50,50), icons[item.iconIndex], ScaleMode.StretchToFill, true, 10.0F);
 		return pressed;
 	}
 
 	int newSubItem(int i, Inventory.Item item) {
 		int pressed = -1;
-		if (GUI.Button (new Rect (UIx+UIOffset*2, UIy+i*(UIheight+UIGap)+extraY, 50, 50), i.ToString())) {
-			pressed = Event.current.button;
-		}
-		GUI.DrawTexture(new Rect(UIx+UIOffset*2, UIy+i*(UIheight+UIGap)+extraY, 50,50), icons[item.iconIndex], ScaleMode.StretchToFill, true, 10.0F);
-		if(GUI.Button(new Rect(UIx+UIOffset*2+50,UIy+i*(UIheight+UIGap)+extraY,UIWIdth,UIheight), item.name)) {
+		if(GUI.Button(new Rect(UIx+UIOffset*2,UIy+i*(UIheight+UIGap)+extraY,UIWIdth,UIheight), item.name)) {
 			int index = backpack.items.IndexOf(item);
 			if(pressed == -1) {
 				pressed = Event.current.button;
 			}
 		}
+		GUI.DrawTexture(new Rect(UIx+UIOffset*2, UIy+i*(UIheight+UIGap)+extraY, 50,50), icons[item.iconIndex], ScaleMode.StretchToFill, true, 10.0F);
 		return pressed;
 	}
 
 	void seperator(int i, int xOff) {
-		GUI.Button(new Rect(UIx+UIOffset*xOff+50,UIy+i*(UIheight+UIGap)+extraY,UIWIdth,20), "");
+		GUI.Button(new Rect(UIx+UIOffset*xOff,UIy+i*(UIheight+UIGap)+extraY,UIWIdth,20), "");
 		extraY = 25;
 	}
 
