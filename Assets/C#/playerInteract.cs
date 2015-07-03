@@ -26,27 +26,17 @@ public class playerInteract : MonoBehaviour {
 				if(hit.transform.gameObject.tag == "Pickup") {
 					itemDetails details = hit.transform.gameObject.GetComponent<itemDetails>();
 					if(details.isContainer) {
-						int newContI = inventory.addContainer(details.itemIndex, details.damage);
+						int newContI = inventory.addContainer(details.itemIndex, details.damage, details.value);
 						if(newContI != -1) {
 							for(int i = 0; i < details.subItemIndex.Count; i++) {
-								inventory.addItemToContainer(newContI, details.subItemIndex[i], details.subItemDamage[i]);
+								inventory.addItemToContainer(newContI, details.subItemIndex[i], details.subItemDamage[i], details.subItemValue[i]);
 							}
 							Network.Destroy(hit.transform.gameObject);
 						}
 					} else {
-						if(inventory.addItemToBackpack(hit.transform.gameObject.GetComponent<itemDetails>().itemIndex, hit.transform.gameObject.GetComponent<itemDetails>().damage)) {
+						if(inventory.addItemToBackpack(hit.transform.gameObject.GetComponent<itemDetails>().itemIndex, hit.transform.gameObject.GetComponent<itemDetails>().damage, hit.transform.gameObject.GetComponent<itemDetails>().value)) {
 							Network.Destroy(hit.transform.gameObject);
 						}
-					}
-				}
-				Debug.Log (hit.transform.gameObject.tag);
-				if(hit.transform.gameObject.tag == "Door") {
-					Debug.Log("IS DOOR");
-					if(hit.transform.gameObject.GetComponent<door>().isOpen) {
-						Debug.Log("WAS OPEN");
-						hit.transform.gameObject.GetComponent<door>().setState(false);
-					} else {
-						hit.transform.gameObject.GetComponent<door>().setState(true);
 					}
 				}
 			}

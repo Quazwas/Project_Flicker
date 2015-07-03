@@ -13,7 +13,7 @@ public class Inventory : MonoBehaviour {
 		public int id;
 		public float value;
 		public float maxValue;
-		public string itemClass;
+		public string itemClass = "fuck you";
 		public int functionIndex;
 		public int iconIndex;
 
@@ -26,8 +26,9 @@ public class Inventory : MonoBehaviour {
 			functionIndex = itemType.functionIndex;
 			value = itemType.value;
 			iconIndex = itemType.iconIndex;
+			itemClass = itemType.itemClass;
 		}
-		public Item(ItemType itemType, float newDamage) {
+		public Item(ItemType itemType, float newDamage, string newClass) {
 			name = itemType.name;
 			damage = newDamage;
 			size = itemType.size;
@@ -35,6 +36,7 @@ public class Inventory : MonoBehaviour {
 			functionIndex = itemType.functionIndex;
 			value = itemType.value;
 			iconIndex = itemType.iconIndex;
+			itemClass = newClass;
 		}
 	}
 	public class ItemType {
@@ -46,8 +48,9 @@ public class Inventory : MonoBehaviour {
 		public int functionIndex;
 		public float value;
 		public int iconIndex;
+		public string itemClass;
 
-		public ItemType(int newIndex, string newName, int newSize, int newPrefabIndex, int newFunIndex, float newValue, int newIcon) {
+		public ItemType(int newIndex, string newName, int newSize, int newPrefabIndex, int newFunIndex, float newValue, int newIcon, string newClass) {
 			index = newIndex;
 			name = newName;
 			size = newSize;
@@ -55,15 +58,18 @@ public class Inventory : MonoBehaviour {
 			functionIndex = newFunIndex;
 			value = newValue;
 			iconIndex = newIcon;
+			itemClass = newClass;
+
 		}
 	}
 	public List<ItemType> itemTypes = new List<ItemType>() {
-		//new ItemType(index, name, size, prefabIndex, functionIndex, value, icon)
-		new ItemType(0, "Baked Beans", 1, 0, 2, 15, 1),
-		new ItemType(1, "Bottled Water", 1, 0, 1, 15, 0),
-		new ItemType(2, "Old Photograph", 1, 0, 0, 0, 0),
-		new ItemType(3, "Large Backpack", 4, 1, 3, 25, 0)
-
+		//new ItemType(index, name, size, prefabIndex, functionIndex, value, icon, class)
+		new ItemType(0, "Baked Beans", 1, 1, 2, 15, 1, "food"),
+		new ItemType(1, "Bottled Water", 1, 2, 1, 15, 0, "food"),
+		new ItemType(2, "Old Photograph", 1, 0, 0, 0, 0, "misc"),
+		new ItemType(3, "Large Backpack", 4, 3, 3, 25, 0, "backpack"),
+		new ItemType(4, "M1911 (Pistol)", 4, 5, 4, 3, 0, "weapon"),
+		new ItemType(5, "M1911 Magazine", 1, 5, 0, 10, 0, "magazine")
 	};
 
 	public class Container {
@@ -74,6 +80,7 @@ public class Inventory : MonoBehaviour {
 		public int size;
 		public string name;
 		public int id;
+		public float value = 10f;
 		public List<Item> contents = new List<Item>();
 		public int prefabIndex;
 
@@ -158,10 +165,11 @@ public class Inventory : MonoBehaviour {
 		}
 		return false;
 	}
-	public bool addItemToBackpack(int itemIndex, float damage) {
+	public bool addItemToBackpack(int itemIndex, float damage, float value) {
 		if(backpack.capacity - backpack.fullness() >= itemTypes[itemIndex].size) {
 			Item i = new Item(itemTypes[itemIndex]);
 			i.damage = damage;
+			i.value = value;
 			backpack.items.Add(i);
 			return true;
 		}
@@ -189,18 +197,20 @@ public class Inventory : MonoBehaviour {
 		}
 		return -1;
 	}
-	public int addContainer(int containerIndex, float damage) {
+	public int addContainer(int containerIndex, float damage, float value) {
 		if(backpack.capacity - backpack.fullness() >= containerTypes[containerIndex].size) {
 			Container cont = new Container(containerTypes[containerIndex]);
 			cont.damage = damage;
+			cont.value = value;
 			backpack.containers.Add (cont);
 			return backpack.containers.IndexOf(cont);
 		}
 		return -1;
 	}
-	public void addItemToContainer(int contIndex, int itemIndex, float newDamage) {
+	public void addItemToContainer(int contIndex, int itemIndex, float newDamage, float value) {
 		Item item = new Item (itemTypes [itemIndex]);
 		item.damage = newDamage;
+		item.value = value;
 		backpack.containers[contIndex].contents.Add(item);
 
 	}

@@ -228,7 +228,7 @@ public class InventoryDisplay : MonoBehaviour {
 
 	int newItem(int i, Inventory.Item item) {
 		int pressed = -1;
-		if (GUI.Button (new Rect (UIx+UIOffset, UIy + i * (UIheight + UIGap)+extraY, UIWIdth, UIheight), item.name)) {
+		if (GUI.Button (new Rect (UIx+UIOffset, UIy + i * (UIheight + UIGap)+extraY, UIWIdth, UIheight), item.name + item.value.ToString()+ item.itemClass)) {
 			if(pressed == -1) {
 				pressed = Event.current.button;
 			}
@@ -268,6 +268,7 @@ public class InventoryDisplay : MonoBehaviour {
 		details.itemIndex = item.id;
 		details.damage = item.damage;
 		details.isContainer = false;
+		details.value = item.value;
 		details.initializeOthers ();
 	}
 	
@@ -283,9 +284,11 @@ public class InventoryDisplay : MonoBehaviour {
 		details.itemIndex = container.id;
 		details.damage = container.damage;
 		details.isContainer = true;
+		details.value = container.value;
 		foreach (Inventory.Item item in container.contents) {
 			details.subItemIndex.Add(item.id);
 			details.subItemDamage.Add(item.damage);
+			details.subItemValue.Add(item.value);
 		}
 		details.initializeOthers ();
 	}
