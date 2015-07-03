@@ -38,6 +38,12 @@ public class playerInteract : MonoBehaviour {
 							Network.Destroy(hit.transform.gameObject);
 						}
 					}
+				} else if(hit.transform.gameObject.tag == "Door") {
+					if(hit.transform.gameObject.GetComponent<door>().isOpen) {
+						hit.transform.gameObject.GetComponent<door>().setState(false);
+					} else {
+						hit.transform.gameObject.GetComponent<door>().setState(true);
+					}
 				}
 			}
 		}

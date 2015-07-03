@@ -74,6 +74,10 @@ public class WeaponController : MonoBehaviour {
 	public void refreshWeapon() {
 		Network.Destroy (currentWeaponObject);
 		currentWeaponObject = Network.Instantiate (guns[currentWeapon], weaponPosition.position, weaponPosition.rotation, 0) as GameObject;
+		NetworkView nView = currentWeaponObject.GetComponent<NetworkView> ();
+		NetworkViewID nViewID = Network.AllocateViewID ();
+		NetworkViewID nViewID2 = weaponPosition.GetComponent<NetworkView> ().viewID;
+		nView.RPC ("parentize", RPCMode.AllBuffered, nViewID, nViewID2);
 	}
 
 	public void displayWeaponDetails() {
