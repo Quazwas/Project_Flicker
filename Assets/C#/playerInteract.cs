@@ -39,6 +39,16 @@ public class playerInteract : MonoBehaviour {
 						}
 					}
 				}
+				Debug.Log (hit.transform.gameObject.tag);
+				if(hit.transform.gameObject.tag == "Door") {
+					Debug.Log("IS DOOR");
+					if(hit.transform.gameObject.GetComponent<door>().isOpen) {
+						Debug.Log("WAS OPEN");
+						hit.transform.gameObject.GetComponent<door>().setState(false);
+					} else {
+						hit.transform.gameObject.GetComponent<door>().setState(true);
+					}
+				}
 			}
 		}
 	}
